@@ -121,7 +121,7 @@ EN_terminalError_t isBelowMaxAmount(ST_terminalData_t *termData)
     {
         retResult = EXCEED_MAX_AMOUNT;
     }
-    else if (termData->transAmount > termData->maxTransAmount)
+    else if (termData->transAmount > termData->maxTransAmount || termData->maxTransAmount ==0.0f)
     {
         retResult = EXCEED_MAX_AMOUNT;
     }
@@ -143,6 +143,7 @@ EN_terminalError_t setMaxAmount(ST_terminalData_t *termData)
     else if(gMaxTransAmount>0)
     {
         termData->maxTransAmount = gMaxTransAmount;
+        printf("\naa%fAA\n",gMaxTransAmount);
     }
     else 
     {

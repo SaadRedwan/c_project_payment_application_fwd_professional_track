@@ -13,7 +13,7 @@
 
 #include "../Server/server.h"
 
-float gMaxTransAmount = 0.00;
+float gMaxTransAmount = 0.0f;
 
 void appStart(void);
 

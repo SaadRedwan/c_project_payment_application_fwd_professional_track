@@ -6,77 +6,88 @@
 
 #include "app.h"
 
+extern uint8_t gIndexOfValidAccount; 
+extern ST_accountsDB_t ST_Accounts_DB_t[];
+
 void appStart(void)
 {
     ST_cardData_t cardData;
     ST_terminalData_t termData;
     ST_transaction_t transData;
 
-    EN_serverError_t checkResult;
+    EN_serverError_t checkResultServ;
+    EN_terminalError_t checkResultTerm;
 
     // Card module: get card data from user.
     getCardHolderName(&cardData);
+    fflush(stdin);
     getCardExpiryDate(&cardData);
+    fflush(stdin);
     getCardPAN(&cardData);
+    fflush(stdin);
 
     // Teminal module: get terminat data and make some checks.
     setMaxAmount(&termData);
     getTransactionDate(&termData);
+    
 
-    checkResult = isCardExpired(cardData, termData);
+    checkResultTerm = isCardExpired(cardData, termData);
 
-    if (checkResult != OK_TERMINAL)
+    if (checkResultTerm != OK_TERMINAL)
     {
-        printf("\nDeclined Expired Card.");
+        printf("\nDeclined Expired Card\n");
     }
     else
     {
         //to reset the value of checkResult to avoid confusion from last checkResult.
-        checkResult =ACCOUNT_NOT_FOUND; 
+        checkResultTerm =INVALID_MAX_AMOUNT; 
 
         getTransactionAmount(&termData);
-        checkResult = isBelowMaxAmount(&termData);
+        fflush(stdin);
+        checkResultTerm = isBelowMaxAmount(&termData);
 
-        if ( checkResult != OK_TERMINAL)
+        if ( checkResultTerm != OK_TERMINAL)
         {
-            printf("\nDeclined Amount Exceeding Limit.");
+            printf("\nDeclined Amount Exceeding Limit");
         }
         else
         {
             //to reset the value of checkResult to avoid confusion from last checkResult.
-            checkResult =ACCOUNT_NOT_FOUND; 
+            checkResultServ =ACCOUNT_NOT_FOUND; 
+            checkResultServ = isValidAccount(&cardData);
 
-            checkResult = isValidAccount(&cardData);
-
-            if(checkResult != OK_TERMINAL)
+            if(checkResultServ != OK_TERMINAL)
             {
-                printf("\nDecliend invalid account");
+                printf("\nDecliend invalid account\n");
             }
             else
             {
                 //to reset the value of checkResult to avoid confusion from last checkResult.
-                checkResult =ACCOUNT_NOT_FOUND;
+                checkResultServ =ACCOUNT_NOT_FOUND;
 
-                if( checkResult != OK_TERMINAL )
+                transData = (ST_transaction_t) {0,cardData,termData,0};
+
+                checkResultServ = isAmountAvailable(&transData);
+
+                if( checkResultServ != OK_TERMINAL )
                 {
-                    printf("\nDecliend insuffecient funds");
+                    printf("\nDecliend insuffecient funds\n");
                 }
                 else
                 {   
-                    EN_transState_t checkResult;
-                    checkResult = INTERNAL_SERVER_ERROR;
+                    EN_transState_t checkResultStat;
+                    checkResultStat = INTERNAL_SERVER_ERROR;
 
-                    transData = (ST_transaction_t) {0,cardData,termData,0};
+                    checkResultStat = recieveTransactionData(&transData);
 
-                    checkResult = recieveTransactionData(&transData);
-
-                    if(checkResult != APPROVED)
+                    if(checkResultStat != APPROVED)
                     {
-                        printf("Faild");
+                        printf("\nFaild\n");
                     }
                     else
                     {
-                        printf("Success Transactions Process");
+                        printf("\nSuccess Transactions Process\n");
+                        printf("Your Updated balance is %f",ST_Accounts_DB_t[gIndexOfValidAccount].balance);
                     }
                 }
             }
@@ -86,8 +97,8 @@ void appStart(void)
 
 void main(void)
 {
-    printf("Welcom to The Payment Application");
-    printf("The Application will start Now");
+    printf("\t\t\tWelcom to The Payment Application\n");
+    printf("\t\t\t\tThe Application will start Now\n\n");
 
     appStart();
     

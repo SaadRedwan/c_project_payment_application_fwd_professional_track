@@ -97,8 +97,8 @@ void appStart(void)
 
 void main(void)
 {
-    printf("\t\t\tWelcom to The Payment Application\n");
-    printf("\t\t\t\tThe Application will start Now\n\n");
+    printf("\t\t\tWelcom to The Payment Application FWD\n");
+    printf("\t\t\t The Application will start Now\n\n");
 
     appStart();
     

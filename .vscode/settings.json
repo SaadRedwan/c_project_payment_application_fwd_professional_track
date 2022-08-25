@@ -3,7 +3,8 @@
         "terminal.h": "c",
         "string.h": "c",
         "server.h": "c",
-        "card.h": "c"
+        "card.h": "c",
+        "app.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

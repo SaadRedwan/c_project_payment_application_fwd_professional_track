@@ -143,7 +143,6 @@ EN_terminalError_t setMaxAmount(ST_terminalData_t *termData)
     else if(gMaxTransAmount>0)
     {
         termData->maxTransAmount = gMaxTransAmount;
-        printf("\naa%fAA\n",gMaxTransAmount);
     }
     else 
     {

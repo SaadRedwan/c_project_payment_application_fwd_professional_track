@@ -87,7 +87,7 @@ void appStart(void)
                     else
                     {
                         printf("\nSuccess Transactions Process\n");
-                        printf("Your Updated balance is %f",ST_Accounts_DB_t[gIndexOfValidAccount].balance);
+                        printf("Your Updated balance is %.2f",ST_Accounts_DB_t[gIndexOfValidAccount].balance);
                     }
                 }
             }
